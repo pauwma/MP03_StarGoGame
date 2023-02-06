@@ -20,7 +20,6 @@ public class Asteroide {
         imageView.setX(x);
         imageView.setY(y);
         this.rotation = 0;
-
     }
 
     public ImageView getImageView() {

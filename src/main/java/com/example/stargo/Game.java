@@ -33,7 +33,7 @@ public class Game extends Application {
         Canvas canvas = new Canvas(800, 1000);
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.drawImage(new Image("moon_background.png"),0,0);
+        gc.drawImage(new Image("space.png"),0,0);
 
 
         asteroides = new ArrayList<>();
