@@ -9,7 +9,7 @@
    <children>
       <ImageView fitHeight="1000.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <image>
-            <Image url="@moon_background.png" />
+            <Image url="@../../../moon_background.png" />
          </image>
       </ImageView>
    </children>

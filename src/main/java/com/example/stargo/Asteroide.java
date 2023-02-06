@@ -1,27 +1,36 @@
 package com.example.stargo;
 
-import javafx.scene.canvas.GraphicsContext;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Asteroide {
-    private double x, y;
-    private int size;
-    private double speed;
-    public Asteroide(double x, double y) {
-        this(x, y, 10, 1);
-    }
-    public Asteroide(double x, double y, int size, double speed) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.speed = speed;
+    int x;
+    int y;
+    private double velocidad;
+    private double rotation;
+
+    ImageView imageView;
+
+    public Asteroide(Image image,double velocidad) {
+        this.x = (int) (Math.random() * 600 + -200);
+        this.y = -400;
+        this.velocidad = velocidad;
+        imageView = new ImageView(image);
+        imageView.setX(x);
+        imageView.setY(y);
+        this.rotation = 0;
+
     }
 
-    public void update() {
-        y += speed;
+    public ImageView getImageView() {
+        return imageView;
     }
 
-    public void render(GraphicsContext gc) {
-        gc.fillOval(x, y, size, size);
+    public void move() {
+        y += velocidad;
+        imageView.setY(y);
+        imageView.setRotate(rotation);
+        rotation += 0.4;
     }
 }
-
