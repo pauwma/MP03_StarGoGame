@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -38,6 +39,18 @@ public class Game extends Application {
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(new Image("space.png"),0,0);
+
+
+        // * Ufo
+
+
+
+        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("X: " + event.getSceneX() + ", Y: " + event.getSceneY());
+            }
+        });
 
         asteroides = new ArrayList<>();
 
