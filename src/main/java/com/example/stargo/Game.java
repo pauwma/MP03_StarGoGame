@@ -1,24 +1,19 @@
 package com.example.stargo;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
 import javafx.animation.AnimationTimer;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -27,6 +22,10 @@ import java.util.TimerTask;
 public class Game extends Application {
     List<Asteroide> asteroides;
     AnimationTimer timer;
+    int nAsteroides;
+    int minSpawnTime;
+    int maxSpawnTime;
+
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
@@ -40,23 +39,34 @@ public class Game extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(new Image("space.png"),0,0);
 
+        nAsteroides = 333;
+        minSpawnTime = 800;
+        maxSpawnTime = 1500;
 
         // * Ufo
+        Ufo ufo = new Ufo(new Image("ufo.png"));
+        root.getChildren().add(ufo.getImageView());
+        AnimationTimer timerUfo = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                ufo.move();
+            }
+        };
+        timerUfo.start();
 
-
-
+        /* POSICIÓN RATÓN /
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println("X: " + event.getSceneX() + ", Y: " + event.getSceneY());
             }
-        });
+        }); */
 
+        // Spawn de asteroides
+        Timer timerAsteroides = new Timer();
         asteroides = new ArrayList<>();
-
-        for (int i = 0; i < 999; i++) {
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
+        for (int i = 0; i < nAsteroides; i++) {
+            timerAsteroides.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     Platform.runLater(new Runnable() {
@@ -88,7 +98,7 @@ public class Game extends Application {
                         }
                     });
                 }
-            }, i * 800);
+            }, i * ((int) (Math.random() * (maxSpawnTime - minSpawnTime + 1) + minSpawnTime)));
         }
 
 
@@ -97,6 +107,12 @@ public class Game extends Application {
             public void handle(long now) {
                 for (Asteroide asteroide : asteroides) {
                     asteroide.move();
+                    Bounds asteroideBounds = asteroide.getImageView().getBoundsInParent();
+                    asteroideBounds = new BoundingBox(asteroideBounds.getMinX() + 40, asteroideBounds.getMinY() + 10, asteroideBounds.getWidth() - 20, asteroideBounds.getHeight() - 20);
+                    if (asteroideBounds.intersects(ufo.getImageView().getBoundsInParent()) && asteroide.isColisionado() == false) {
+                        System.out.println("El asteroide ha colisionado con el UFO");
+                        asteroide.setColisionado(true);
+                    }
                 }
             }
         };

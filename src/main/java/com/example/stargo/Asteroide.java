@@ -9,6 +9,7 @@ public class Asteroide {
     int y;
     private double velocidad;
     private double rotation;
+    private boolean colisionado;
 
     ImageView imageView;
 
@@ -31,5 +32,13 @@ public class Asteroide {
         imageView.setY(y);
         imageView.setRotate(rotation);
         rotation += 0.4;
+    }
+
+    public boolean isColisionado() {
+        return colisionado;
+    }
+
+    public void setColisionado(boolean colisionado) {
+        this.colisionado = colisionado;
     }
 }
