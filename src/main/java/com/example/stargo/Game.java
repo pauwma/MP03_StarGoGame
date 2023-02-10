@@ -40,10 +40,10 @@ public class Game extends Application {
         gc.drawImage(new Image("space.png"),0,0);
 
         nAsteroides = 333;
-        minSpawnTime = 800;
+        minSpawnTime = 1000;
         maxSpawnTime = 1500;
 
-        // * Ufo
+        // ? Ufo
         Ufo ufo = new Ufo(new Image("ufo.png"));
         root.getChildren().add(ufo.getImageView());
         AnimationTimer timerUfo = new AnimationTimer() {
@@ -54,15 +54,7 @@ public class Game extends Application {
         };
         timerUfo.start();
 
-        /* POSICIÓN RATÓN /
-        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("X: " + event.getSceneX() + ", Y: " + event.getSceneY());
-            }
-        }); */
-
-        // Spawn de asteroides
+        // ? Spawn de asteroides
         Timer timerAsteroides = new Timer();
         asteroides = new ArrayList<>();
         for (int i = 0; i < nAsteroides; i++) {
@@ -78,7 +70,6 @@ public class Game extends Application {
                             root.getChildren().add(asteroide.getImageView());
                             asteroides.add(asteroide);
 
-                            // Agregar evento de mouse para cada asteroide
                             asteroide.getImageView().setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent event) {
@@ -101,6 +92,13 @@ public class Game extends Application {
             }, i * ((int) (Math.random() * (maxSpawnTime - minSpawnTime + 1) + minSpawnTime)));
         }
 
+        /* POSICIÓN RATÓN /
+        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("X: " + event.getSceneX() + ", Y: " + event.getSceneY());
+            }
+        }); */
 
         timer = new AnimationTimer() {
             @Override
