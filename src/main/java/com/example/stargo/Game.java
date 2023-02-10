@@ -86,6 +86,7 @@ public class Game extends Application {
                                 }
                             });
 
+
                         }
                     });
                 }
@@ -110,6 +111,9 @@ public class Game extends Application {
                     if (asteroideBounds.intersects(ufo.getImageView().getBoundsInParent()) && asteroide.isColisionado() == false) {
                         System.out.println("El asteroide ha colisionado con el UFO");
                         asteroide.setColisionado(true);
+                    }
+                    if (asteroide.y > 1000 && asteroide.isColisionado() == false ){
+                        root.getChildren().remove(asteroide.getImageView());
                     }
                 }
             }
