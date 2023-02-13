@@ -16,10 +16,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import java.util.*;
 
 public class Game extends Application {
     List<Asteroide> asteroides;
@@ -66,8 +64,15 @@ public class Game extends Application {
                         @Override
                         public void run() {
                             Asteroide asteroide = new Asteroide(new Image("asteroide_1.png"), nivel.velocidad);
-                            asteroide.getImageView().setScaleX(0.18);
-                            asteroide.getImageView().setScaleY(0.18);
+
+                            // ? Randomizador de tamaño
+                            Random random = new Random();
+                            double randomScale = nivel.minSize + (nivel.maxSize - nivel.minSize) * random.nextDouble();
+                            asteroide.getImageView().setScaleX(randomScale);
+
+
+                            asteroide.getImageView().setScaleX(randomScale);
+                            asteroide.getImageView().setScaleY(randomScale);
                             root.getChildren().add(asteroide.getImageView());
                             asteroides.add(asteroide);
                             asteroide.getImageView().setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -106,19 +111,10 @@ public class Game extends Application {
                 nivel.nPuntos += nivel.puntosPorSegundo;
                 //Platform.runLater(() -> textPuntos.setText(Integer.toString(nivel.nPuntos)));
                 System.out.println(nivel.nPuntos);
-                switch (nivel.nPuntos){
-                    case 200:
-                        System.out.println("NIVEL 2");
-                        nivel.velocidad++;
-                        break;
-                    case 400:
-                        System.out.println("NIVEL 3");
-                        nivel.velocidad++;
-                        break;
-                    case 600:
-                        System.out.println("NIVEL 4");
-                        nivel.velocidad++;
-                        break;
+                if (nivel.nPuntos % 100 == 0){
+                    nivel.nNivel++;
+                    nivel.velocidad = nivel.velocidad+0.5f;
+                    System.out.println("Nivel - " + nivel.nNivel);
                 }
             }
         }, 1000, 1000);
