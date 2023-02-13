@@ -100,7 +100,11 @@ public class Game extends Application {
                     asteroide.move();
                     Bounds asteroideBounds = asteroide.getImageView().getBoundsInParent();
                     asteroideBounds = new BoundingBox(asteroideBounds.getMinX() + 40, asteroideBounds.getMinY() + 10, asteroideBounds.getWidth() - 20, asteroideBounds.getHeight() - 20);
-                    if (asteroideBounds.intersects(ufo.getImageView().getBoundsInParent()) && asteroide.isColisionado() == false) {
+
+                    Bounds ufoBounds = ufo.getImageView().getBoundsInParent();
+                    ufoBounds = new BoundingBox(ufoBounds.getMinX() + 40, ufoBounds.getMinY() + 40, ufoBounds.getWidth() - 40, ufoBounds.getHeight() - 20);
+
+                    if (asteroideBounds.intersects(ufoBounds) && asteroide.isColisionado() == false) {
                         asteroide.setColisionado(true);
                         nivel.vida = nivel.vida - 10;
                         System.out.println("Hit - " + nivel.vida);

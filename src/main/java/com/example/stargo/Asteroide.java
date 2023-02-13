@@ -11,6 +11,7 @@ public class Asteroide {
     private double velocidad;
     private double rotation;
     private boolean colisionado;
+    boolean fueraDeVista;
 
     ImageView imageView;
 

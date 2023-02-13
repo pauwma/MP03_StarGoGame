@@ -14,8 +14,8 @@ public class NivelController {
         this.nNivel = 1;
         this.nPuntos = 0;
         this.vida = 100;
-        this.minSpawnTime = 1000;
-        this.maxSpawnTime = 2000;
-        this.nAsteroides = 10;
+        this.minSpawnTime = 500;
+        this.maxSpawnTime = 800;
+        this.nAsteroides = 30;
     }
 }
