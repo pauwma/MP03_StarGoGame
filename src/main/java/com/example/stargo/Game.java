@@ -3,6 +3,7 @@ package com.example.stargo;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -11,6 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
@@ -22,6 +24,9 @@ import java.util.TimerTask;
 public class Game extends Application {
     List<Asteroide> asteroides;
     AnimationTimer timer;
+
+    @FXML
+    Text textPuntos;
 
 
     @Override
@@ -37,6 +42,7 @@ public class Game extends Application {
         gc.drawImage(new Image("space.png"),0,0);
 
         NivelController nivel = new NivelController();
+        //textPuntos.setText("0");
 
         // ? Ufo
         Ufo ufo = new Ufo(new Image("ufo.png"));
@@ -59,7 +65,7 @@ public class Game extends Application {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Asteroide asteroide = new Asteroide(new Image("asteroide_1.png"), 2 );
+                            Asteroide asteroide = new Asteroide(new Image("asteroide_1.png"), nivel.velocidad);
                             asteroide.getImageView().setScaleX(0.18);
                             asteroide.getImageView().setScaleY(0.18);
                             root.getChildren().add(asteroide.getImageView());
@@ -92,6 +98,30 @@ public class Game extends Application {
                 System.out.println("X: " + event.getSceneX() + ", Y: " + event.getSceneY());
             }
         }); */
+
+        Timer puntosTimer = new Timer();
+        puntosTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                nivel.nPuntos += nivel.puntosPorSegundo;
+                //Platform.runLater(() -> textPuntos.setText(Integer.toString(nivel.nPuntos)));
+                System.out.println(nivel.nPuntos);
+                switch (nivel.nPuntos){
+                    case 200:
+                        System.out.println("NIVEL 2");
+                        nivel.velocidad++;
+                        break;
+                    case 400:
+                        System.out.println("NIVEL 3");
+                        nivel.velocidad++;
+                        break;
+                    case 600:
+                        System.out.println("NIVEL 4");
+                        nivel.velocidad++;
+                        break;
+                }
+            }
+        }, 1000, 1000);
 
         timer = new AnimationTimer() {
             @Override
