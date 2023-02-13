@@ -22,9 +22,6 @@ import java.util.TimerTask;
 public class Game extends Application {
     List<Asteroide> asteroides;
     AnimationTimer timer;
-    int nAsteroides;
-    int minSpawnTime;
-    int maxSpawnTime;
 
 
     @Override
@@ -39,9 +36,7 @@ public class Game extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(new Image("space.png"),0,0);
 
-        nAsteroides = 333;
-        minSpawnTime = 1000;
-        maxSpawnTime = 1500;
+        NivelController nivel = new NivelController();
 
         // ? Ufo
         Ufo ufo = new Ufo(new Image("ufo.png"));
@@ -57,19 +52,18 @@ public class Game extends Application {
         // ? Spawn de asteroides
         Timer timerAsteroides = new Timer();
         asteroides = new ArrayList<>();
-        for (int i = 0; i < nAsteroides; i++) {
+        for (int i = 0; i < nivel.nAsteroides; i++) {
             timerAsteroides.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Asteroide asteroide = new Asteroide(new Image("asteroide_1.png"), 2);
+                            Asteroide asteroide = new Asteroide(new Image("asteroide_1.png"), 2 );
                             asteroide.getImageView().setScaleX(0.18);
                             asteroide.getImageView().setScaleY(0.18);
                             root.getChildren().add(asteroide.getImageView());
                             asteroides.add(asteroide);
-
                             asteroide.getImageView().setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent event) {
@@ -85,12 +79,10 @@ public class Game extends Application {
                                     transition.play();
                                 }
                             });
-
-
                         }
                     });
                 }
-            }, i * ((int) (Math.random() * (maxSpawnTime - minSpawnTime + 1) + minSpawnTime)));
+            }, i * ((int) (Math.random() * (nivel.maxSpawnTime - nivel.minSpawnTime + 1) + nivel.minSpawnTime)));
         }
 
         /* POSICIÓN RATÓN /
@@ -109,8 +101,9 @@ public class Game extends Application {
                     Bounds asteroideBounds = asteroide.getImageView().getBoundsInParent();
                     asteroideBounds = new BoundingBox(asteroideBounds.getMinX() + 40, asteroideBounds.getMinY() + 10, asteroideBounds.getWidth() - 20, asteroideBounds.getHeight() - 20);
                     if (asteroideBounds.intersects(ufo.getImageView().getBoundsInParent()) && asteroide.isColisionado() == false) {
-                        System.out.println("El asteroide ha colisionado con el UFO");
                         asteroide.setColisionado(true);
+                        nivel.vida = nivel.vida - 10;
+                        System.out.println("Hit - " + nivel.vida);
                     }
                     if (asteroide.y > 1000 && asteroide.isColisionado() == false ){
                         root.getChildren().remove(asteroide.getImageView());
