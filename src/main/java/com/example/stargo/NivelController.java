@@ -19,11 +19,11 @@ public class NivelController {
         this.nPuntos = 0;
         this.puntosPorSegundo = 10;
         this.vida = 100;
-        this.minSpawnTime = 500;
-        this.maxSpawnTime = 800;
+        this.minSpawnTime = 400;
+        this.maxSpawnTime = 600;
         this.nAsteroides = 300;
         this.velocidad = 2;
-        this.minSize = 0.40f;
+        this.minSize = 0.20f;
         this.maxSize = 0.18f;
     }
 }

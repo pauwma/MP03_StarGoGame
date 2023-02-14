@@ -16,7 +16,7 @@ public class Asteroide {
     ImageView imageView;
 
     public Asteroide(Image image,double velocidad) {
-        this.x = (int) (Math.random() * 600 + -200);
+        this.x = (int) (Math.random() * 600 + -290);
         this.y = -400;
         this.velocidad = velocidad;
         imageView = new ImageView(image);

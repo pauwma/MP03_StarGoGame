@@ -63,10 +63,14 @@ public class Game extends Application {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            Asteroide asteroide = new Asteroide(new Image("asteroide_1.png"), nivel.velocidad);
 
-                            // ? Randomizador de tamaño
+                            // ? Randomizadores
                             Random random = new Random();
+
+                            int numeroAleatorio = random.nextInt(6) + 1;
+                            String rutaImagen = "asteroide_" + numeroAleatorio + ".png";
+                            Asteroide asteroide = new Asteroide(new Image(rutaImagen), nivel.velocidad);
+
                             double randomScale = nivel.minSize + (nivel.maxSize - nivel.minSize) * random.nextDouble();
                             asteroide.getImageView().setScaleX(randomScale);
 
