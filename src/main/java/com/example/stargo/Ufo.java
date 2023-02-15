@@ -8,7 +8,6 @@ public class Ufo {
     int x;
     int y;
     private double velocidad;
-    private double rotation;
     private boolean moveRight;
 
     ImageView imageView;
@@ -20,7 +19,6 @@ public class Ufo {
         imageView = new ImageView(image);
         imageView.setX(x);
         imageView.setY(y);
-        this.rotation = 0;
         this.moveRight = true;
         imageView.setFitWidth(105);
         imageView.setFitHeight(80);
@@ -41,5 +39,9 @@ public class Ufo {
         }
         imageView.setX(x);
         imageView.setY(y);
+    }
+
+    public void changeVelocidad(double velocidad){
+        this.velocidad = velocidad;
     }
 }

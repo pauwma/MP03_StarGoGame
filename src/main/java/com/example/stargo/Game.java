@@ -22,9 +22,9 @@ import java.util.*;
 public class Game extends Application {
     List<Asteroide> asteroides;
     AnimationTimer timer;
-
     @FXML
     Text textPuntos;
+    Ufo ufo;
 
 
     @Override
@@ -39,11 +39,10 @@ public class Game extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(new Image("space.png"),0,0);
 
-        NivelController nivel = new NivelController();
-        //textPuntos.setText("0");
+        NivelController nivel = new NivelController(ufo);
 
         // ? Ufo
-        Ufo ufo = new Ufo(new Image("ufo.png"));
+        ufo = new Ufo(new Image("ufo.png"));
         root.getChildren().add(ufo.getImageView());
         AnimationTimer timerUfo = new AnimationTimer() {
             @Override
@@ -73,9 +72,6 @@ public class Game extends Application {
 
                             double randomScale = nivel.minSize + (nivel.maxSize - nivel.minSize) * random.nextDouble();
                             asteroide.getImageView().setScaleX(randomScale);
-
-
-                            asteroide.getImageView().setScaleX(randomScale);
                             asteroide.getImageView().setScaleY(randomScale);
                             root.getChildren().add(asteroide.getImageView());
                             asteroides.add(asteroide);
@@ -97,7 +93,7 @@ public class Game extends Application {
                         }
                     });
                 }
-            }, i * ((int) (Math.random() * (nivel.maxSpawnTime - nivel.minSpawnTime + 1) + nivel.minSpawnTime)));
+            }, i * nivel.spawnTime);
         }
 
         /* POSICIÓN RATÓN /
@@ -108,17 +104,23 @@ public class Game extends Application {
             }
         }); */
 
-        Timer puntosTimer = new Timer();
-        puntosTimer.scheduleAtFixedRate(new TimerTask() {
+        Timer nivelTimer = new Timer();
+        nivelTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 nivel.nPuntos += nivel.puntosPorSegundo;
                 //Platform.runLater(() -> textPuntos.setText(Integer.toString(nivel.nPuntos)));
                 System.out.println(nivel.nPuntos);
-                if (nivel.nPuntos % 100 == 0){
+                if (nivel.nPuntos % 150 == 0){
                     nivel.nNivel++;
-                    nivel.velocidad = nivel.velocidad+0.5f;
                     System.out.println("Nivel - " + nivel.nNivel);
+                    nivel.cambiosNivel();
+                    switch (nivel.nNivel){
+                        case 4: ufo.changeVelocidad(1.5f);break;
+                        case 6: ufo.changeVelocidad(2f);break;
+                        case 8: ufo.changeVelocidad(2.5f);break;
+                        case 10: ufo.changeVelocidad(3f);break;
+                    }
                 }
             }
         }, 1000, 1000);
