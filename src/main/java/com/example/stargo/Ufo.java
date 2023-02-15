@@ -1,8 +1,12 @@
 package com.example.stargo;
 
 
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
 public class Ufo {
     int x;
@@ -43,5 +47,25 @@ public class Ufo {
 
     public void changeVelocidad(double velocidad){
         this.velocidad = velocidad;
+    }
+
+    public void damage() {
+        Image image1 = new Image("ufo.png");
+        Image image2 = new Image("ufo_damage.png");
+
+        // Crea una secuencia de cambios de imagen con un intervalo de 100ms
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
+            if (imageView.getImage() == image1) {
+                imageView.setImage(image2);
+            } else {
+                imageView.setImage(image1);
+            }
+        }));
+        timeline.setCycleCount(6); // Repite la secuencia 6 veces (3 segundos en total)
+        timeline.setOnFinished(event -> {
+            // Al terminar la secuencia, restaura la imagen original
+            imageView.setImage(image1);
+        });
+        timeline.play();
     }
 }

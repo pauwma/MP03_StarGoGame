@@ -140,6 +140,7 @@ public class Game extends Application {
                         asteroide.setColisionado(true);
                         nivel.vida = nivel.vida - 10;
                         System.out.println("Hit - " + nivel.vida);
+                        ufo.damage();
                     }
                     if (asteroide.y > 1000 && asteroide.isColisionado() == false ){
                         root.getChildren().remove(asteroide.getImageView());
