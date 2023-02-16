@@ -2,6 +2,7 @@ package com.example.stargo;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.BoundingBox;
@@ -10,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -51,6 +53,14 @@ public class Game extends Application {
             }
         };
         timerUfo.start();
+
+        Button button = new Button("Cambiar Velocidad");
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                ufo.habilidadEncoger();
+            }
+        });
+        root.getChildren().add(button);
 
         // ? Spawn de asteroides
         Timer timerAsteroides = new Timer();

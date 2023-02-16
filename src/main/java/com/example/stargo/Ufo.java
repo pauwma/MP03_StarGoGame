@@ -1,9 +1,7 @@
 package com.example.stargo;
 
 
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
@@ -13,6 +11,7 @@ public class Ufo {
     int y;
     private double velocidad;
     private boolean moveRight;
+    private boolean encogido;
 
     ImageView imageView;
 
@@ -67,5 +66,42 @@ public class Ufo {
             imageView.setImage(image1);
         });
         timeline.play();
+    }
+
+    public void habilidadEncoger() {
+
+        if (encogido==true){return;}
+        encogido = true;
+        double originalWidth = imageView.getFitWidth();
+        double originalHeight = imageView.getFitHeight();
+
+        // Primera transición: reduce el tamaño del imageView a la mitad
+        ScaleTransition scaleTransition1 = new ScaleTransition(Duration.millis(500), imageView);
+        scaleTransition1.setByX(-0.5);
+        scaleTransition1.setByY(-0.5);
+
+        // Segunda transición: mantiene el tamaño reducido durante 4 segundos
+        ScaleTransition scaleTransition2 = new ScaleTransition(Duration.seconds(4), imageView);
+        scaleTransition2.setByX(0);
+        scaleTransition2.setByY(0);
+
+        // Tercera transición: restaura el tamaño original del imageView
+        ScaleTransition scaleTransition3 = new ScaleTransition(Duration.millis(500), imageView);
+        scaleTransition3.setByX(0.5);
+        scaleTransition3.setByY(0.5);
+
+        // Añade un EventHandler para iniciar la segunda transición cuando termine la primera
+        scaleTransition1.setOnFinished(event -> {
+            scaleTransition2.play();
+        });
+
+        // Añade un EventHandler para iniciar la tercera transición cuando termine la segunda
+        scaleTransition2.setOnFinished(event -> {
+            scaleTransition3.play();
+            encogido = false;
+        });
+
+        // Inicia la primera transición
+        scaleTransition1.play();
     }
 }
