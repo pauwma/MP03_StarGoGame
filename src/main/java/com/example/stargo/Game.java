@@ -33,9 +33,6 @@ public class Game extends Application {
     Group root;
     Canvas canvas;
 
-
-
-
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
         root = new Group();
@@ -64,7 +61,7 @@ public class Game extends Application {
         Button button = new Button("Cambiar Velocidad");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                ufo.habilidadEncoger();
+                ufo.habilidadEscudo();
             }
         });
         root.getChildren().add(button);

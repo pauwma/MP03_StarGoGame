@@ -75,8 +75,9 @@ public class Ufo {
 
     public void habilidadEncoger() {
 
-        if (encogido==true){return;}
-        if (protegido==true){return;}
+        if (encogido || protegido) {
+            return; // Si el objeto ya está encogido o protegido, no hace nada.
+        }
         encogido = true;
         double originalWidth = imageView.getFitWidth();
         double originalHeight = imageView.getFitHeight();
@@ -111,60 +112,30 @@ public class Ufo {
         scaleTransition1.play();
     }
 
-    public void shield() {
-        if (encogido==true){return;}
-        if (protegido==true){return;}
-        // Obtiene la imagen original del imageView
-        Image originalImage = imageView.getImage();
-
-        // Define la imagen del escudo
+    public void habilidadEscudo() {
+        if (encogido || protegido) {
+            return; // Si el objeto ya está encogido o protegido, no hace nada.
+        }
+        protegido = true;
+        // Carga la imagen del escudo.
         Image shieldImage = new Image("ufo_shield.png");
 
-        // Define la transición para mostrar la imagen del escudo durante 3 segundos
-        FadeTransition showShield = new FadeTransition(Duration.seconds(3), imageView);
-        showShield.setFromValue(0);
-        showShield.setToValue(1);
-
-        // Define la transición para parpadear la imagen del escudo
-        TranslateTransition blinkShield = new TranslateTransition(Duration.millis(500), imageView);
-        blinkShield.setByX(10);
-        blinkShield.setCycleCount(6);
-        blinkShield.setAutoReverse(true);
-
-        // Define la transición para intercambiar entre la imagen original y la del escudo
-        ParallelTransition swapImages = new ParallelTransition(
-                new FadeTransition(Duration.millis(200), imageView),
-                new PauseTransition(Duration.millis(100)),
-                new FadeTransition(Duration.millis(200), imageView)
+        // Crea una Timeline para cambiar la imagen del ImageView a la del escudo durante 4 segundos.
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(4), event -> {
+                    imageView.setImage(new Image("ufo.png")); // Al terminar la transición, cambia la imagen del ImageView a la original.
+                    protegido = false;
+                })
         );
-        swapImages.setCycleCount(3);
 
-        // Define la transición para ocultar la imagen del escudo
-        FadeTransition hideShield = new FadeTransition(Duration.seconds(1), imageView);
-        hideShield.setFromValue(1);
-        hideShield.setToValue(0);
+        // Guarda la imagen original antes de cambiarla.
+        Image originalImage = imageView.getImage();
 
-        // Añade un EventHandler para intercambiar entre la imagen original y la del escudo al finalizar la transición de parpadeo
-        blinkShield.setOnFinished(event -> {
-            imageView.setImage(originalImage);
-            swapImages.play();
-        });
+        // Cambia la imagen del ImageView a la del escudo.
+        imageView.setImage(shieldImage);
 
-        // Añade un EventHandler para volver a la imagen original al finalizar la última transición
-        swapImages.setOnFinished(event -> {
-            imageView.setImage(originalImage);
-            protegido = false;
-        });
-
-        // Reproduce las transiciones en secuencia
-        showShield.play();
-        showShield.setOnFinished(event -> {
-            imageView.setImage(shieldImage);
-            blinkShield.play();
-        });
-        blinkShield.setOnFinished(event -> {
-            hideShield.play();
-        });
+        // Inicia la Timeline.
+        timeline.play();
     }
 
 
