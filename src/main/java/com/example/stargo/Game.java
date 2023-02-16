@@ -5,9 +5,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,9 +35,11 @@ public class Game extends Application {
     Ufo ufo;
     Group root;
     Canvas canvas;
+    boolean cerrar;
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
+        cerrar = false;
         root = new Group();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
@@ -61,7 +66,8 @@ public class Game extends Application {
         Button button = new Button("Cambiar Velocidad");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                ufo.habilidadEscudo();
+                //ufo.habilidadEscudo();
+                nivel.vida = 10;
             }
         });
         root.getChildren().add(button);
@@ -70,6 +76,7 @@ public class Game extends Application {
         Timer timerAsteroides = new Timer();
         asteroides = new ArrayList<>();
         for (int i = 0; i < nivel.nAsteroides; i++) {
+            if (cerrar){break;}
             timerAsteroides.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -81,7 +88,7 @@ public class Game extends Application {
                             Random random = new Random();
 
                             int numeroAleatorio = random.nextInt(6) + 1;
-                            String rutaImagen = "asteroide_" + numeroAleatorio + ".png";
+                            String rutaImagen = "Asteroide_" + numeroAleatorio + ".png";
                             Asteroide asteroide = new Asteroide(new Image(rutaImagen), nivel.velocidad);
 
                             double randomScale = nivel.minSize + (nivel.maxSize - nivel.minSize) * random.nextDouble();
@@ -110,14 +117,6 @@ public class Game extends Application {
             }, i * nivel.spawnTime);
         }
 
-        /* POSICIÓN RATÓN /
-        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("X: " + event.getSceneX() + ", Y: " + event.getSceneY());
-            }
-        }); */
-
         // ? Timer controlador de niveles
         Timer nivelTimer = new Timer();
         nivelTimer.scheduleAtFixedRate(new TimerTask() {
@@ -125,8 +124,10 @@ public class Game extends Application {
             public void run() {
                 nivel.nPuntos += nivel.puntosPorSegundo;
                 //Platform.runLater(() -> textPuntos.setText(Integer.toString(nivel.nPuntos)));
-                System.out.println(nivel.nPuntos);
-                if (nivel.nPuntos % 150 == 0){
+                if (cerrar==false){
+                    System.out.println(nivel.nPuntos);
+                }
+                if (nivel.nPuntos % 150 == 0 && cerrar == false){
                     nivel.nNivel++;
                     System.out.println("Nivel - " + nivel.nNivel);
                     nivel.cambiosNivel();
@@ -144,6 +145,7 @@ public class Game extends Application {
             @Override
             public void handle(long now) {
                 for (Asteroide asteroide : asteroides) {
+                    if (cerrar){break;}
                     asteroide.move();
                     Bounds asteroideBounds = asteroide.getImageView().getBoundsInParent();
                     asteroideBounds = new BoundingBox(asteroideBounds.getMinX() + 40, asteroideBounds.getMinY() + 40, asteroideBounds.getWidth() - 40, asteroideBounds.getHeight() - 40);
@@ -166,6 +168,11 @@ public class Game extends Application {
                             asteroides.remove(asteroide);
                         });
                         transition.play();
+
+                        if (nivel.vida <= 0) {
+                            primaryStage.close(); // Cierra la ventana actual
+                            mostrarGameOver(nivel.nPuntos);
+                        }
                     }
 
                     if (asteroide.y > 1000 && asteroide.isColisionado() == false ){
@@ -182,5 +189,26 @@ public class Game extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @FXML
+    private void mostrarGameOver(int nPuntos) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("gameover.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+
+            // Obtener la referencia al Text nPuntos
+            Text nPuntosText = (Text) loader.getNamespace().get("nPuntos");
+
+            // Asignar el valor de nPuntos al Text nPuntos
+            nPuntosText.setText(Integer.toString(nPuntos));
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
