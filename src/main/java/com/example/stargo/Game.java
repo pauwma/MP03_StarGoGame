@@ -60,7 +60,7 @@ public class Game extends Application {
         // ? Mostrar niveles
         Label nivelLabel = new Label();
         nivelLabel.setAlignment(Pos.CENTER);
-        nivelLabel.setStyle("-fx-background-color: #000; -fx-text-fill: #fff; -fx-padding: 600px; -fx-font-size: 54px;");
+        nivelLabel.setStyle("-fx-background-color: transparent; -fx-text-fill: #fff; -fx-margin: 200px;  -fx-alignment: center; -fx-font-size: 54px;");
         nivelLabel.setOpacity(0);
         root.getChildren().add(nivelLabel);
 
@@ -159,7 +159,7 @@ public class Game extends Application {
                 if (nivel.nPuntos % 150 == 0 && cerrar == false){
                     nivel.nNivel++;
                     System.out.println("Nivel - " + nivel.nNivel);
-                    Platform.runLater(() -> nivelLabel.setText("Nivel " + (nivel.nNivel)));
+                    Platform.runLater(() -> nivelLabel.setText("\n\n\n\n                 Nivel " + (nivel.nNivel)));
                     timelineLevel.playFromStart();
                     nivel.cambiosNivel();
                     switch (nivel.nNivel){
