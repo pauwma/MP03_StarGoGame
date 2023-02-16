@@ -1,5 +1,8 @@
 package com.example.stargo;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -8,12 +11,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -51,6 +56,30 @@ public class Game extends Application {
         gc.drawImage(new Image("space.png"),0,0);
 
         NivelController nivel = new NivelController(ufo);
+
+        // ? Mostrar niveles
+        Label nivelLabel = new Label();
+        nivelLabel.setAlignment(Pos.CENTER);
+        nivelLabel.setStyle("-fx-background-color: #000; -fx-text-fill: #fff; -fx-padding: 10px; -fx-font-size: 24px;");
+        nivelLabel.setOpacity(0);
+        root.getChildren().add(nivelLabel);
+
+        // Obtener dimensiones de la ventana
+        Scene sceneDimensions = root.getScene();
+        double screenWidth = sceneDimensions.getWidth();
+        double screenHeight = sceneDimensions.getHeight();
+
+        // Posicionar Label en el centro
+        nivelLabel.setTranslateX(screenWidth / 2 - nivelLabel.getWidth() / 2);
+        nivelLabel.setTranslateY(screenHeight / 2 - nivelLabel.getHeight() / 2);
+
+        Timeline timelineLevel = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(nivelLabel.opacityProperty(), 0)),
+                new KeyFrame(Duration.seconds(0.5), new KeyValue(nivelLabel.opacityProperty(), 1)),
+                new KeyFrame(Duration.seconds(2.5), new KeyValue(nivelLabel.opacityProperty(), 1)),
+                new KeyFrame(Duration.seconds(3), new KeyValue(nivelLabel.opacityProperty(), 0))
+        );
+
 
         // ? Ufo
         ufo = new Ufo(new Image("ufo.png"));
@@ -130,6 +159,8 @@ public class Game extends Application {
                 if (nivel.nPuntos % 150 == 0 && cerrar == false){
                     nivel.nNivel++;
                     System.out.println("Nivel - " + nivel.nNivel);
+                    Platform.runLater(() -> nivelLabel.setText("Nivel " + (nivel.nNivel)));
+                    timelineLevel.playFromStart();
                     nivel.cambiosNivel();
                     switch (nivel.nNivel){
                         case 4: ufo.changeVelocidad(1.5f);break;
