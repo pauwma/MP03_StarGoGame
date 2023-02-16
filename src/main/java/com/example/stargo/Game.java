@@ -20,6 +20,9 @@ import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Game extends Application {
     List<Asteroide> asteroides;
@@ -27,16 +30,20 @@ public class Game extends Application {
     @FXML
     Text textPuntos;
     Ufo ufo;
+    Group root;
+    Canvas canvas;
+
+
 
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
-        Group root = new Group();
+        root = new Group();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
-        Canvas canvas = new Canvas(800, 1000);
+        canvas = new Canvas(800, 1000);
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(new Image("space.png"),0,0);
@@ -114,6 +121,7 @@ public class Game extends Application {
             }
         }); */
 
+        // ? Timer controlador de niveles
         Timer nivelTimer = new Timer();
         nivelTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -141,17 +149,28 @@ public class Game extends Application {
                 for (Asteroide asteroide : asteroides) {
                     asteroide.move();
                     Bounds asteroideBounds = asteroide.getImageView().getBoundsInParent();
-                    asteroideBounds = new BoundingBox(asteroideBounds.getMinX() + 40, asteroideBounds.getMinY() + 10, asteroideBounds.getWidth() - 20, asteroideBounds.getHeight() - 20);
+                    asteroideBounds = new BoundingBox(asteroideBounds.getMinX() + 40, asteroideBounds.getMinY() + 40, asteroideBounds.getWidth() - 40, asteroideBounds.getHeight() - 40);
 
                     Bounds ufoBounds = ufo.getImageView().getBoundsInParent();
                     ufoBounds = new BoundingBox(ufoBounds.getMinX() + 40, ufoBounds.getMinY() + 40, ufoBounds.getWidth() - 40, ufoBounds.getHeight() - 20);
 
-                    if (asteroideBounds.intersects(ufoBounds) && asteroide.isColisionado() == false) {
+                    if (asteroideBounds.intersects(ufoBounds) && asteroide.isColisionado() == false && ufo.protegido == false) {
                         asteroide.setColisionado(true);
                         nivel.vida = nivel.vida - 10;
                         System.out.println("Hit - " + nivel.vida);
                         ufo.damage();
+                        javafx.animation.ScaleTransition transition = new javafx.animation.ScaleTransition();
+                        transition.setDuration(Duration.seconds(0.2f));
+                        transition.setNode(asteroide.getImageView());
+                        transition.setToX(0);
+                        transition.setToY(0);
+                        transition.setOnFinished(event1 -> {
+                            root.getChildren().remove(asteroide.getImageView());
+                            asteroides.remove(asteroide);
+                        });
+                        transition.play();
                     }
+
                     if (asteroide.y > 1000 && asteroide.isColisionado() == false ){
                         root.getChildren().remove(asteroide.getImageView());
                     }

@@ -2,8 +2,10 @@ package com.example.stargo;
 
 
 import javafx.animation.*;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 public class Ufo {
@@ -12,6 +14,7 @@ public class Ufo {
     private double velocidad;
     private boolean moveRight;
     private boolean encogido;
+    boolean protegido;
 
     ImageView imageView;
 
@@ -49,28 +52,31 @@ public class Ufo {
     }
 
     public void damage() {
-        Image image1 = new Image("ufo.png");
-        Image image2 = new Image("ufo_damage.png");
+        if (!protegido){
+            Image image1 = new Image("ufo.png");
+            Image image2 = new Image("ufo_damage.png");
 
-        // Crea una secuencia de cambios de imagen con un intervalo de 100ms
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
-            if (imageView.getImage() == image1) {
-                imageView.setImage(image2);
-            } else {
+            // Crea una secuencia de cambios de imagen con un intervalo de 100ms
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
+                if (imageView.getImage() == image1) {
+                    imageView.setImage(image2);
+                } else {
+                    imageView.setImage(image1);
+                }
+            }));
+            timeline.setCycleCount(6); // Repite la secuencia 6 veces (3 segundos en total)
+            timeline.setOnFinished(event -> {
+                // Al terminar la secuencia, restaura la imagen original
                 imageView.setImage(image1);
-            }
-        }));
-        timeline.setCycleCount(6); // Repite la secuencia 6 veces (3 segundos en total)
-        timeline.setOnFinished(event -> {
-            // Al terminar la secuencia, restaura la imagen original
-            imageView.setImage(image1);
-        });
-        timeline.play();
+            });
+            timeline.play();
+        }
     }
 
     public void habilidadEncoger() {
 
         if (encogido==true){return;}
+        if (protegido==true){return;}
         encogido = true;
         double originalWidth = imageView.getFitWidth();
         double originalHeight = imageView.getFitHeight();
@@ -104,4 +110,62 @@ public class Ufo {
         // Inicia la primera transición
         scaleTransition1.play();
     }
+
+    public void shield() {
+        if (encogido==true){return;}
+        if (protegido==true){return;}
+        // Obtiene la imagen original del imageView
+        Image originalImage = imageView.getImage();
+
+        // Define la imagen del escudo
+        Image shieldImage = new Image("ufo_shield.png");
+
+        // Define la transición para mostrar la imagen del escudo durante 3 segundos
+        FadeTransition showShield = new FadeTransition(Duration.seconds(3), imageView);
+        showShield.setFromValue(0);
+        showShield.setToValue(1);
+
+        // Define la transición para parpadear la imagen del escudo
+        TranslateTransition blinkShield = new TranslateTransition(Duration.millis(500), imageView);
+        blinkShield.setByX(10);
+        blinkShield.setCycleCount(6);
+        blinkShield.setAutoReverse(true);
+
+        // Define la transición para intercambiar entre la imagen original y la del escudo
+        ParallelTransition swapImages = new ParallelTransition(
+                new FadeTransition(Duration.millis(200), imageView),
+                new PauseTransition(Duration.millis(100)),
+                new FadeTransition(Duration.millis(200), imageView)
+        );
+        swapImages.setCycleCount(3);
+
+        // Define la transición para ocultar la imagen del escudo
+        FadeTransition hideShield = new FadeTransition(Duration.seconds(1), imageView);
+        hideShield.setFromValue(1);
+        hideShield.setToValue(0);
+
+        // Añade un EventHandler para intercambiar entre la imagen original y la del escudo al finalizar la transición de parpadeo
+        blinkShield.setOnFinished(event -> {
+            imageView.setImage(originalImage);
+            swapImages.play();
+        });
+
+        // Añade un EventHandler para volver a la imagen original al finalizar la última transición
+        swapImages.setOnFinished(event -> {
+            imageView.setImage(originalImage);
+            protegido = false;
+        });
+
+        // Reproduce las transiciones en secuencia
+        showShield.play();
+        showShield.setOnFinished(event -> {
+            imageView.setImage(shieldImage);
+            blinkShield.play();
+        });
+        blinkShield.setOnFinished(event -> {
+            hideShield.play();
+        });
+    }
+
+
 }
