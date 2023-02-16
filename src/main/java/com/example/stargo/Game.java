@@ -60,7 +60,7 @@ public class Game extends Application {
         // ? Mostrar niveles
         Label nivelLabel = new Label();
         nivelLabel.setAlignment(Pos.CENTER);
-        nivelLabel.setStyle("-fx-background-color: #000; -fx-text-fill: #fff; -fx-padding: 10px; -fx-font-size: 24px;");
+        nivelLabel.setStyle("-fx-background-color: #000; -fx-text-fill: #fff; -fx-padding: 600px; -fx-font-size: 54px;");
         nivelLabel.setOpacity(0);
         root.getChildren().add(nivelLabel);
 
@@ -235,7 +235,7 @@ public class Game extends Application {
             Text nPuntosText = (Text) loader.getNamespace().get("nPuntos");
 
             // Asignar el valor de nPuntos al Text nPuntos
-            nPuntosText.setText(Integer.toString(nPuntos));
+            nPuntosText.setText("Points - " + Integer.toString(nPuntos));
 
             stage.show();
         } catch (IOException e) {

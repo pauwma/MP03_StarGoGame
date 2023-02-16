@@ -20,7 +20,7 @@ public class NivelController {
         this.nNivel = 1;
         this.nPuntos = 0;
         this.puntosPorSegundo = 10;
-        this.vida = 100;
+        this.vida = 30;
         this.spawnTime = 1200;
         this.nAsteroides = 300;
         this.velocidad = 2;
