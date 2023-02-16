@@ -21,17 +21,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
-
+import javafx.scene.media.AudioClip;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 public class Game extends Application {
     List<Asteroide> asteroides;
     AnimationTimer timer;
@@ -56,6 +54,12 @@ public class Game extends Application {
         gc.drawImage(new Image("space.png"),0,0);
 
         NivelController nivel = new NivelController(ufo);
+
+        // ? Sonidos
+        MediaPlayer mediaPlayerAsteroid = new MediaPlayer(new Media(getClass().getResource("asteroide.mp3").toString()));
+        MediaPlayer mediaPlayerUfo = new MediaPlayer(new Media(getClass().getResource("ufo.mp3").toString()));
+        MediaPlayer mediaPlayerShieldufo = new MediaPlayer(new Media(getClass().getResource("ufo.mp3").toString()));
+
 
         // ? Mostrar niveles
         Label nivelLabel = new Label();
@@ -138,6 +142,7 @@ public class Game extends Application {
                                         asteroides.remove(asteroide);
                                     });
                                     transition.play();
+                                    mediaPlayerAsteroid.play();
                                 }
                             });
                         }
@@ -188,6 +193,7 @@ public class Game extends Application {
                         asteroide.setColisionado(true);
                         nivel.vida = nivel.vida - 10;
                         System.out.println("Hit - " + nivel.vida);
+                        mediaPlayerUfo.play();
                         ufo.damage();
                         javafx.animation.ScaleTransition transition = new javafx.animation.ScaleTransition();
                         transition.setDuration(Duration.seconds(0.2f));
