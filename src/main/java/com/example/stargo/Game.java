@@ -27,7 +27,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
-import javafx.scene.media.AudioClip;
+
 import java.io.IOException;
 import java.util.*;
 public class Game extends Application {
@@ -54,12 +54,6 @@ public class Game extends Application {
         gc.drawImage(new Image("space.png"),0,0);
 
         NivelController nivel = new NivelController(ufo);
-
-        // ? Sonidos
-        MediaPlayer mediaPlayerAsteroid = new MediaPlayer(new Media(getClass().getResource("asteroide.mp3").toString()));
-        MediaPlayer mediaPlayerUfo = new MediaPlayer(new Media(getClass().getResource("ufo.mp3").toString()));
-        MediaPlayer mediaPlayerShieldufo = new MediaPlayer(new Media(getClass().getResource("ufo.mp3").toString()));
-
 
         // ? Mostrar niveles
         Label nivelLabel = new Label();
@@ -99,8 +93,7 @@ public class Game extends Application {
         Button button = new Button("Cambiar Velocidad");
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                //ufo.habilidadEscudo();
-                nivel.vida = 10;
+                ufo.habilidadEscudo();
             }
         });
         root.getChildren().add(button);
@@ -142,6 +135,8 @@ public class Game extends Application {
                                         asteroides.remove(asteroide);
                                     });
                                     transition.play();
+                                    MediaPlayer mediaPlayerAsteroid = new MediaPlayer(new Media(getClass().getResource("asteroide.mp3").toString()));
+                                    mediaPlayerAsteroid.setVolume(0.3);
                                     mediaPlayerAsteroid.play();
                                 }
                             });
@@ -193,8 +188,9 @@ public class Game extends Application {
                         asteroide.setColisionado(true);
                         nivel.vida = nivel.vida - 10;
                         System.out.println("Hit - " + nivel.vida);
-                        mediaPlayerUfo.play();
-                        ufo.damage();
+                        MediaPlayer mediaPlayerUfo = new MediaPlayer(new Media(getClass().getResource("ufo.mp3").toString()));
+                        mediaPlayerUfo.setVolume(0.3);
+                        mediaPlayerUfo.play();                        ufo.damage();
                         javafx.animation.ScaleTransition transition = new javafx.animation.ScaleTransition();
                         transition.setDuration(Duration.seconds(0.2f));
                         transition.setNode(asteroide.getImageView());
@@ -210,6 +206,20 @@ public class Game extends Application {
                             primaryStage.close(); // Cierra la ventana actual
                             mostrarGameOver(nivel.nPuntos);
                         }
+                    } if (asteroideBounds.intersects(ufoBounds) && asteroide.isColisionado() == false && ufo.protegido == true){
+                        javafx.animation.ScaleTransition transition = new javafx.animation.ScaleTransition();
+                        transition.setDuration(Duration.seconds(0.2f));
+                        transition.setNode(asteroide.getImageView());
+                        transition.setToX(0);
+                        transition.setToY(0);
+                        transition.setOnFinished(event1 -> {
+                            root.getChildren().remove(asteroide.getImageView());
+                            asteroides.remove(asteroide);
+                        });
+                        transition.play();
+                        MediaPlayer mediaPlayerShield = new MediaPlayer(new Media(getClass().getResource("shield.mp3").toString()));
+                        mediaPlayerShield.setVolume(0.3);
+                        mediaPlayerShield.play();
                     }
 
                     if (asteroide.y > 1000 && asteroide.isColisionado() == false ){
