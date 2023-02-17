@@ -62,22 +62,12 @@ public class Game extends Application {
         nivelLabel.setOpacity(0);
         root.getChildren().add(nivelLabel);
 
-        // Obtener dimensiones de la ventana
-        Scene sceneDimensions = root.getScene();
-        double screenWidth = sceneDimensions.getWidth();
-        double screenHeight = sceneDimensions.getHeight();
-
-        // Posicionar Label en el centro
-        nivelLabel.setTranslateX(screenWidth / 2 - nivelLabel.getWidth() / 2);
-        nivelLabel.setTranslateY(screenHeight / 2 - nivelLabel.getHeight() / 2);
-
         Timeline timelineLevel = new Timeline(
                 new KeyFrame(Duration.ZERO, new KeyValue(nivelLabel.opacityProperty(), 0)),
                 new KeyFrame(Duration.seconds(0.5), new KeyValue(nivelLabel.opacityProperty(), 1)),
                 new KeyFrame(Duration.seconds(2.5), new KeyValue(nivelLabel.opacityProperty(), 1)),
                 new KeyFrame(Duration.seconds(3), new KeyValue(nivelLabel.opacityProperty(), 0))
         );
-
 
         // ? Ufo
         ufo = new Ufo(new Image("ufo.png"));
@@ -89,14 +79,6 @@ public class Game extends Application {
             }
         };
         timerUfo.start();
-
-        Button button = new Button("Cambiar Velocidad");
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                ufo.habilidadEscudo();
-            }
-        });
-        root.getChildren().add(button);
 
         // ? Spawn de asteroides
         Timer timerAsteroides = new Timer();
